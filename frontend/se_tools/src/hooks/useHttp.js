@@ -3,9 +3,9 @@
 import {useState} from "react";
 
 export const useHttp = () => {
-    const [data, setData] = useState<T | null>()
-    const [error, setError] = useState<T | null>(null)
-    const [loading, setLoading] = useState<boolean>(false)
+    const [data, setData] = useState({});
+    const [error, setError] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const request = async (
         url,
@@ -16,7 +16,7 @@ export const useHttp = () => {
         setError(null);
 
         try {
-            const res = await fetch(`http://localhost:3000/${url}`, {
+            const res = await fetch(`http://localhost:8000/${url}`, {
                 ...options,
                 headers: {
                     'Content-Type': 'application/json',

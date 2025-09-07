@@ -1,12 +1,21 @@
 # main.py
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from io import BytesIO
 from openpyxl import load_workbook
 from pathlib import Path
 
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins     = ["http://localhost:3000"],  # explicit origins only
+    allow_credentials = True,                   # allow cookies/Authorization
+    allow_methods     = ["GET","POST","PUT","DELETE","OPTIONS"],
+    allow_headers     = ["Content-Type","Authorization"],
+    expose_headers    = ["Content-Disposition"],   # e.g., for file downloads
+    max_age           = 600,  # cache preflight (seconds)allow_origins = ["*"],
+)
 
 @app.get("/")
 async def root():
@@ -17,8 +26,9 @@ async def root():
 async def say_hello(name: str):
     return {"message": f"Hello {name}"}
 
-@app.post("")
+@app.post("/sdwan")
 async def sdwanConfig():
+    print("in sdwan")
     template_path = Path("templates/Meraki ACD Default Config.xlsx")
     template_bytes = template_path.read_bytes()
 
@@ -32,7 +42,7 @@ async def sdwanConfig():
     return Response(
         content=out.getvalue(),
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        header={
+        headers={
             "Content-Disposition": f'attachment; filename="{filename}"',
             "Cache-Control": "no-store",
         }
