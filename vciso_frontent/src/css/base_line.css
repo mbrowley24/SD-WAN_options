@@ -1,0 +1,12 @@
+
+
+.submit {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: blue;
+}
+.submit:hover {
+    background: darkblue;
+}
+
