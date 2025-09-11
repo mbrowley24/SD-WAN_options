@@ -91,11 +91,13 @@ async def sdwanConfigreOneMXOneVlan(req: Request):
     ws["D17"]  = "hub"
     ws["E17"]  = "yes"
     ws["F17"]  = "static"
-    ws["C24"]  = data["provider"]
-    ws["D24"]  = data["ipAssignment"]
-    ws["E24"]  = data["network"]
-    ws["F24"]  = data["gateway"]
-    ws['G24']  = data["description"]
+    ws["A25"]  = data["hostname"]
+    ws["B25"]  = "WAN1"
+    ws["C25"]  = data["provider"]
+    ws["D25"]  = data["ipAssignment"]
+    ws["E25"]  = data["network"]
+    ws["F25"]  = data["gateway"]
+    ws['G25']  = data["description"]
     ws["A49"]  = data["hostname"]
     ws['B49']  = "LAN1"
     ws["C49"]  = "data"
@@ -104,7 +106,9 @@ async def sdwanConfigreOneMXOneVlan(req: Request):
     ws["F49"]  = "10.0.0.1"
     ws["G49"]  = "internal"
     ws["A58"]  = data["hostname"]
-    ws["B48"]  = "1"
+    ws["B58"]  = "1"
+    ws["C58"]  = "8.8.8.8"
+    ws["D58"]  = "75.75.75.75"
     ws["G58"]  = "10.0.0.2-10.0.0.240"
     ws["A66"]  = data["hostname"]
     ws["B66"]  = "1"
@@ -113,7 +117,7 @@ async def sdwanConfigreOneMXOneVlan(req: Request):
     out = BytesIO()
     wb.save(out)
     out.seek(0)
-    filename = "test_template"
+    filename = f'{data["hostname"]}-mx-config-template'
 
     return Response(
         content=out.getvalue(),
