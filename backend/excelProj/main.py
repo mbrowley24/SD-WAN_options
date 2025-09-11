@@ -10,9 +10,9 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins     = ["*"],  # explicit origins only
-    allow_credentials = True,                   # allow cookies/Authorization
-    allow_methods     = ["GET","POST","PUT","DELETE","OPTIONS"],
-    allow_headers     = ["Content-Type","Authorization"],
+    allow_credentials = False,                   # allow cookies/Authorization
+    allow_methods     = ["*"],
+    allow_headers     = ["*"],
     expose_headers    = ["Content-Disposition"],   # e.g., for file downloads
     max_age           = 600,  # cache preflight (seconds)allow_origins = ["*"],
 )
