@@ -6,22 +6,24 @@ import { formatIPv4FromDigits } from "@/component/helper/ipaddress"
 import { ExcelDownload } from "@/component/helper/excel"
 
 const SingleSite = () =>{
+    const mxData = useSelector((s) => s.mxData)
     const {request} = useHttp()
     const [defaultHostname, setHostname] = useState(true)
     const [formData, setFormData] = useState({
         customerName: "",
+        cidr: "/29",
         address : "",
         hostname: "",
-        provider: "",
+        provider: mxData.options.isp[0],
         other : "",
-        size: "",
-        ipAssignment: "",
+        size: mxData.options.size[0],
+        ipAssignment: mxData.options[0],
         network: "",
         gateway: "",
         description: ""
     });
 
-    const mxData = useSelector((s) => s.mxData)
+    
    
     const inputChange = (e) =>{
         const {name, value} = e.target;
@@ -202,7 +204,7 @@ const SingleSite = () =>{
         id="cidr"
         name="cidr"
         value={formData.cidr}
-        onChange={inputChange}
+        onChange={(e)=>inputChange(e)}
         className="rounded-xl border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       >
         {mxData.options.cidrList.map((item, idx) => (

@@ -9,7 +9,7 @@ from pathlib import Path
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins     = ["http://localhost:3000"],  # explicit origins only
+    allow_origins     = ["*"],  # explicit origins only
     allow_credentials = True,                   # allow cookies/Authorization
     allow_methods     = ["GET","POST","PUT","DELETE","OPTIONS"],
     allow_headers     = ["Content-Type","Authorization"],
