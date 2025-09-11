@@ -117,7 +117,7 @@ async def sdwanConfigreOneMXOneVlan(req: Request):
     out = BytesIO()
     wb.save(out)
     out.seek(0)
-    filename = f'{data["hostname"]}-mx-config-template'
+    filename = f'{data["hostname"]}-mx-config-template.xlsx'
     print(filename)
     return Response(
         content=out.getvalue(),
