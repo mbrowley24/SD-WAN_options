@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import useHttp from "@/hooks/useHttp"
 import { formatIPv4FromDigits } from "@/component/helper/ipaddress"
 import { ExcelDownload } from "@/component/helper/excel"
+import Link from "next/link";
 
 const SingleSite = () =>{
     const mxData = useSelector((s) => s.mxData)
@@ -250,6 +251,7 @@ const SingleSite = () =>{
     >
       Create
     </button>
+     <Link href="/" className="inline-flex items-center justify-center rounded-xl bg-indigo-200/90 px-4 py-2 text-sm font-medium text-slate-900 shadow-lg shadow-indigo-500/20 ring-1 ring-inset ring-indigo-300/60 transition hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">Main Menu</Link>
   </div>
 </form>
 
