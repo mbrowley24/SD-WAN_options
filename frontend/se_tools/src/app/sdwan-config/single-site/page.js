@@ -17,7 +17,7 @@ const SingleSite = () =>{
         provider: mxData.options.isp[0],
         other : "",
         size: mxData.options.size[0],
-        ipAssignment: mxData.options[0],
+        ipAssignment: mxData.options.ipAssignment[0],
         network: "",
         gateway: "",
         description: ""

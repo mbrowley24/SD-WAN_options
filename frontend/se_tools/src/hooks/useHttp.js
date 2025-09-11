@@ -17,7 +17,7 @@ export const useHttp = () => {
         setError(null);
 
         try {
-            const res = await fetch(`${base_url}${url}`, {
+            const res = await fetch(`/api/${base_url}${url}`, {
                 ...options,
                 headers: {
                     'Content-Type': 'application/json',
