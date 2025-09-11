@@ -186,7 +186,8 @@ const SingleSite = () =>{
         </div>
 
   {/* Network + CIDR */}
-  <div className="grid gap-5 md:grid-cols-2">
+  { formData.ipAssignment === "static" &&
+   <div className="grid gap-5 md:grid-cols-2">
     <div className="flex flex-col">
       <label htmlFor="network" className="mb-1 text-sm font-medium text-gray-700">Network</label>
       <input
@@ -214,9 +215,10 @@ const SingleSite = () =>{
       </select>
     </div>
   </div>
-
+ }
   {/* Gateway & Description */}
   <div className="grid gap-5 md:grid-cols-2">
+    { formData.ipAssignment === "static" &&
     <div className="flex flex-col">
       <label htmlFor="gateway" className="mb-1 text-sm font-medium text-gray-700">Gateway</label>
       <input
@@ -228,7 +230,7 @@ const SingleSite = () =>{
         className="rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       />
     </div>
-
+    }
     <div className="flex flex-col">
       <label htmlFor="description" className="mb-1 text-sm font-medium text-gray-700">Description</label>
       <input
