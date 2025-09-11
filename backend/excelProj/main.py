@@ -57,7 +57,7 @@ async def sdwanConfigre(req: Request):
     out = BytesIO()
     wb.save(out)
     out.seek(0)
-    filename = "test_template"
+    filename = filename = f'{data["hostname"]}-mx-config-template'
 
     return Response(
         content=out.getvalue(),
@@ -118,7 +118,7 @@ async def sdwanConfigreOneMXOneVlan(req: Request):
     wb.save(out)
     out.seek(0)
     filename = f'{data["hostname"]}-mx-config-template'
-
+    print(filename)
     return Response(
         content=out.getvalue(),
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
