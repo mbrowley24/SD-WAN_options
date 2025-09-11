@@ -23,7 +23,7 @@ export const useHttp = () => {
                     'Content-Type': 'application/json',
                     ...(options?.headers || {}),
                 },
-                credentials: 'include', // include cookies (e.g., JWT)
+                // credentials: 'include', // include cookies (e.g., JWT)
             });
 
             applyData(res)
