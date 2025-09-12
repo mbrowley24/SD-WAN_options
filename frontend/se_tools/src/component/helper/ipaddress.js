@@ -47,3 +47,16 @@ export function formatIPv4FromDigits(digits) {
 
   return ip;
 }
+
+
+export function isValidIPv4(ip) {
+  const octets = ip.split(".");
+  if (octets.length !== 4) return false;
+  for (const o of octets) {
+    if (!/^\d+$/.test(o)) return false;
+    if (o.length > 1 && o.startsWith("0")) return false; // no leading zeros
+    const n = Number(o);
+    if (n < 0 || n > 255) return false;
+  }
+  return true;
+}

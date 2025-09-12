@@ -1,14 +1,29 @@
 "use client"
-import React, {useState} from "react"
+import React, {useEffect, useMemo, useState} from "react"
+import { ExcelDownload } from "@/component/helper/excel"
+import { formatIPv4FromDigits, isValidIPv4 } from "@/component/helper/ipaddress"
+import Link from "next/link";
+import { mxTopologyErrors } from "@/component/helper/mxValidations";
 import { useDispatch, useSelector } from "react-redux"
 import useHttp from "@/hooks/useHttp"
-import { formatIPv4FromDigits } from "@/component/helper/ipaddress"
-import { ExcelDownload } from "@/component/helper/excel"
-import Link from "next/link";
 
 const SingleSite = () =>{
     const mxData = useSelector((s) => s.mxData)
-    const {request} = useHttp()
+    const [touched, setTouched] = useState({
+        customerName  : false,
+        address       : false,
+        size          : false,
+        hostname      : false,
+        provider      : false,
+        other         : false,
+        ipAssignment  : false,
+        network       : false,
+        cidr          : false,
+        gateway       : false,
+        business_type : false,
+
+    });
+    const {request} = useHttp();
     const [defaultHostname, setHostname] = useState(true)
     const [formData, setFormData] = useState({
         customerName: "",
@@ -21,9 +36,34 @@ const SingleSite = () =>{
         ipAssignment: mxData.options.ipAssignment[0],
         network: "",
         gateway: "",
-        description: ""
+        description: "",
+        business_type: mxData.options.business_types[0]
     });
+    const errors = useMemo(() =>{
+        return mxTopologyErrors(formData) 
+    },[formData])
 
+    useEffect(()=>{
+        
+        const formDataObj   = {...formData}
+        
+        if(formDataObj.ipAssignment === "dhcp"){
+            
+            
+            formDataObj.network = "";
+            formDataObj.gateway = "";
+            formDataObj.cidr    = "";
+
+        }else{
+
+            formDataObj.cidr = "/29";
+        
+        }
+        
+        setFormData(formDataObj)
+        
+
+    }, [formData.ipAssignment])
     
    
     const inputChange = (e) =>{
@@ -45,15 +85,13 @@ const SingleSite = () =>{
 
     
         setFormData(formDataObj)
-        console.log(formData)
     }
 
     const submitData = async (e) =>{
         e.preventDefault();
 
-        console.log(formData)
         const applyData = (res) =>{
-            console.log(res)
+            
             ExcelDownload(res)
         }
 
@@ -62,14 +100,16 @@ const SingleSite = () =>{
             body: JSON.stringify(formData)
         })
 
-
     }
 
-    
+    const formBlurr = (e) =>{
+        const {name} = e.target
+        setTouched((prev) =>({...prev, [name]: true}))
+    }
 
     return(
         
-        <form onSubmit={submitData} className="max-w-3xl mx-auto bg-white/60 backdrop-blur shadow rounded-2xl p-6 md:p-8 space-y-6">
+        <form onSubmit={submitData} onBlur={formBlurr} className="max-w-3xl mx-auto bg-white/60 backdrop-blur shadow rounded-2xl p-6 md:p-8 space-y-6">
             <h2 className="text-2xl font-semibold tracking-tight">Create MX Configuration</h2>
 
             {/* Customer & Address */}
@@ -80,12 +120,15 @@ const SingleSite = () =>{
                         id="customerName"
                         name="customerName"
                         value={formData.customerName}
-                        maxLength={100}
-                        minLength={2}
+                        maxLength={'100'}
+                        minLength={'2'}
                         placeholder="Acme Corp"
                         onChange={inputChange}
                         className="rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
+                    {touched['customerName'] && errors["customerName"] && <p id="customer-name-error" role="alert" className="mt-1 text-sm text-red-600">
+                        {errors["customerName"]}
+                    </p>}
                 </div>
 
             <div className="flex flex-col">
@@ -94,13 +137,15 @@ const SingleSite = () =>{
                     id="address"
                     name="address"
                     value={formData.address}
-                    maxLength={200}
-                    minLength={5}
+                    maxLength={'200'}
+                    minLength={'5'}
                     placeholder="123 Main St, City, ST"
                     onChange={inputChange}
                     className="rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
+                {touched['address'] && errors["address"] && <p id="address-error" role="alert" className="mt-1 text-sm text-red-600">{errors["address"]}</p>}
             </div>
+
         </div>
 
         {/* MX size & Hostname */}
@@ -118,6 +163,7 @@ const SingleSite = () =>{
                 <option key={idx} value={item}>{item}</option>
                 ))}
             </select>
+            {touched["size"] && errors['size'] && <p id="mx-size-error" role="alert" className="mt-1 text-sm text-red-600">Required</p>}
             </div>
 
             <div className="flex flex-col">
@@ -126,30 +172,32 @@ const SingleSite = () =>{
                 id="hostname"
                 name="hostname"
                 value={formData.hostname}
-                minLength={4}
-                maxLength={25}
+                minLength={"4"}
+                maxLength={"25"}
                 placeholder="mx-edge-01"
-                onChange={inputChange}
+                onChange={(e)=>inputChange(e)}
                 className="rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+            {touched["hostname"] && errors["hostname"] && <p id="hostname-error" role="alert" className="mt-1 text-sm text-red-600">{errors["hostname"]}</p>}
             </div>
         </div>
 
         {/* Provider (with Other) */}
         <div className="grid gap-5 md:grid-cols-2">
             <div className="flex flex-col">
-            <label htmlFor="provider" className="mb-1 text-sm font-medium text-gray-700">Underlay Provider</label>
-            <select
-                id="provider"
-                name="provider"
-                value={formData.provider}
-                onChange={inputChange}
-                className="rounded-xl border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-                {mxData.options.isp.map((item, idx) => (
-                <option key={idx} value={item}>{item}</option>
-                ))}
-            </select>
+                <label htmlFor="provider" className="mb-1 text-sm font-medium text-gray-700">Underlay Provider</label>
+                <select
+                    id="provider"
+                    name="provider"
+                    value={formData.provider}
+                    onChange={(e)=>inputChange(e)}
+                    className="rounded-xl border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                    {mxData.options.isp.map((item, idx) => (
+                    <option key={idx}  value={item}>{item}</option>
+                    ))}
+                </select>
+                { touched["provider"] && errors["provider"] && <p id="provider-error" role="alert" className="mt-1 text-sm text-red-600">Required</p>}
             </div>
 
             {formData.provider === "other" && (
@@ -160,9 +208,10 @@ const SingleSite = () =>{
                 name="other"
                 value={formData.other}
                 placeholder="Provider name"
-                onChange={inputChange}
+                onChange={(e)=>inputChange(e)}
                 className="rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
+                {touched["other"] && errors["other-provider"] && <p id="provider-other-error" role="alert" className="mt-1 text-sm text-red-600">Required</p>}
             </div>
             )}
         </div>
@@ -175,13 +224,14 @@ const SingleSite = () =>{
                 id="ipAssignment"
                 name="ipAssignment"
                 value={formData.ipAssignment}
-                onChange={inputChange}
+                onChange={(e)=>inputChange(e)}
                 className="rounded-xl border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
                 {mxData.options.ipAssignment.map((item, idx) => (
-                <option key={idx} value={item}>{item}</option>
+                <option key={idx} className="text-center" value={item}>{item}</option>
                 ))}
             </select>
+            {touched["ipAssignment"] && errors["ipAssignment"] && <p id="static-dhcp-error" role="alert" className="mt-1 text-sm text-red-600">{errors["ipAssignment"]}</p>}
             </div>
         </div>
 
@@ -195,9 +245,10 @@ const SingleSite = () =>{
         name="network"
         value={formData.network}
         placeholder="e.g., 10.0.0.0"
-        onChange={inputChange}
+        onChange={(e)=>inputChange(e)}
         className="rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       />
+      {touched["network"] && errors["network"] && <p id="network-error" role="alert" className="mt-1 text-sm text-red-600">{errors["network"]}</p>}
     </div>
 
     <div className="flex flex-col">
@@ -210,9 +261,10 @@ const SingleSite = () =>{
         className="rounded-xl border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       >
         {mxData.options.cidrList.map((item, idx) => (
-          <option key={idx} value={item}>{item}</option>
+          <option key={idx}   value={item}>{item}</option>
         ))}
       </select>
+      {touched["cidr"] && errors["cidr"] && <p id="cidr-error" role="alert" className="mt-1 text-sm text-red-600">{errors["cidr"]}</p>}
     </div>
   </div>
  }
@@ -229,6 +281,7 @@ const SingleSite = () =>{
         onChange={inputChange}
         className="rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       />
+      {touched["gateway"] && errors["gateway"] && <p id="gateway-error" role="alert" className="mt-1 text-sm text-red-600">{errors["gateway"]}</p>}
     </div>
     }
     <div className="flex flex-col">
@@ -244,10 +297,28 @@ const SingleSite = () =>{
       />
     </div>
   </div>
+  <div className="grid gap-5 md:grid-cols-2">
+            <div className="flex flex-col">
+                <label htmlFor="provider" className="mb-1 text-sm font-medium text-gray-700">Content Filter</label>
+                <select
+                    id="business_type"
+                    name="business_type"
+                    value={formData.business_type}
+                    onChange={(e)=>inputChange(e)}
+                    className="rounded-xl border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                    {mxData.options.business_types.map((item, idx) => (
+                    <option key={idx} className="text-center"  value={item}>{item}</option>
+                    ))}
+                </select>
+                { touched["business_type"] && errors["business_type"] && <p id="business_type-error" role="alert" className="mt-1 text-sm text-red-600">Required</p>}
+            </div>
+        </div>
 
   {/* Submit */}
   <div className="pt-2">
     <button
+      disabled = {Object.keys(errors).length > 0}
       type="submit"
       className="inline-flex items-center justify-center rounded-xl bg-blue-600 text-white px-5 py-2.5 font-medium shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
     >

@@ -1,7 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 
 
-const initialState ={
+export const initialState ={
     mxData:{
         size: "",
         hostname: "",
@@ -62,6 +62,7 @@ const initialState ={
         yesNo: ["No", "Yes"],
         routing: ["static", "BGP", "OSPF"],
         ipAssignment: ["static", "dhcp"],
+        business_types : ["general business", "doctors office", "cannabis org", "scientific tech org", "day care"], 
         cidrList : [
             "/8",
             "/9",
