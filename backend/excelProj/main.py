@@ -101,7 +101,7 @@ async def sdwanConfigreOneMXOneVlan(req: Request):
         content=out.getvalue(),
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={
-            "Content-Disposition": f'attachment; filename="{filename}; filename*=UTF-8''{quote(filename)}',
+            "Content-Disposition": f'attachment; filename="{filename}"; filename*=UTF-8''{quote(filename)}',
             "Cache-Control": "no-store",
         }
     )
