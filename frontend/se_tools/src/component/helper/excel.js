@@ -24,7 +24,6 @@ export const ExcelDownload = async (res) =>{
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    console.log(res.headers)
     const cd = res.headers["content-disposition"];
     const name = filenameFromContentDisposition(cd) ?? "mx-config-template.xlsx";
     a.href = url;

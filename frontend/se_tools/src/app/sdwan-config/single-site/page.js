@@ -4,10 +4,12 @@ import { ExcelDownload } from "@/component/helper/excel"
 import { formatIPv4FromDigits, isValidIPv4 } from "@/component/helper/ipaddress"
 import Link from "next/link";
 import { mxTopologyErrors } from "@/component/helper/mxValidations";
+import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux"
 import useHttp from "@/hooks/useHttp"
 
 const SingleSite = () =>{
+    const router = useRouter()
     const mxData = useSelector((s) => s.mxData)
     const [touched, setTouched] = useState({
         customerName  : false,
@@ -92,7 +94,8 @@ const SingleSite = () =>{
         const applyData = (res) =>{
             
             ExcelDownload(res);
-            console.log(res)
+            
+            router.push("/sdwan-config")
             
         }
 
