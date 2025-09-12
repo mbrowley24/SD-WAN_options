@@ -63,7 +63,7 @@ const SingleSite = () =>{
         setFormData(formDataObj)
         
 
-    }, [formData])
+    }, [formData.ipAssignment])
     
    
     const inputChange = (e) =>{
