@@ -6,8 +6,8 @@ export const useHttp = () => {
     const [data, setData] = useState({});
     const [error, setError] = useState([]);
     const [loading, setLoading] = useState(false);
-    // const base_url = "https://whale-app-dwbzw.ondigitalocean.app/api/"
-    const baseUrl = process.env.BACKEND_URL || 'http://localhost:8000';
+    const baseUrl = "https://whale-app-dwbzw.ondigitalocean.app/api"
+    //const baseUrl = process.env.BACKEND_URL || 'http://localhost:8000';
     //const base_url = "http://localhost:8000/"
     
     const request = async (
