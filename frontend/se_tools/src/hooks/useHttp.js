@@ -6,9 +6,10 @@ export const useHttp = () => {
     const [data, setData] = useState({});
     const [error, setError] = useState([]);
     const [loading, setLoading] = useState(false);
-    const base_url = "https://whale-app-dwbzw.ondigitalocean.app/api/"
-    //const base_url = "https://clownfish-app-3ncmz.ondigitalocean.app/"
+    // const base_url = "https://whale-app-dwbzw.ondigitalocean.app/api/"
+    const baseUrl = process.env.BACKEND_URL || 'http://localhost:8000';
     //const base_url = "http://localhost:8000/"
+    
     const request = async (
         url,
         applyData,
@@ -16,9 +17,9 @@ export const useHttp = () => {
 
         setLoading(true);
         setError(null);
-
+        console.log(baseUrl)
         try {
-            const res = await fetch(`${base_url}${url}`, {
+            const res = await fetch(`${baseUrl}/${url}`, {
                 ...options,
                 headers: {
                     'Content-Type': 'application/json',

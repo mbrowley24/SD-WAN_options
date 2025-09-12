@@ -24,7 +24,6 @@ const SingleSite = () =>{
 
     });
     const {request} = useHttp();
-    const [defaultHostname, setHostname] = useState(true)
     const [formData, setFormData] = useState({
         customerName: "",
         cidr: "/29",
@@ -92,7 +91,9 @@ const SingleSite = () =>{
 
         const applyData = (res) =>{
             
-            ExcelDownload(res)
+            ExcelDownload(res);
+            console.log(res)
+            
         }
 
         await request("single-site", applyData, {

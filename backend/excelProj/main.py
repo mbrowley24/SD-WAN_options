@@ -1,4 +1,5 @@
 # main.py
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
@@ -7,16 +8,24 @@ from openpyxl import load_workbook
 from pathlib import Path
 from services import workbook, configData
 
-production = "https://whale-app-dwbzw.ondigitalocean.app"
-test = "http://localhost:3000"
+import os
+
+
+load_dotenv()
 
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins     = ["*"],  # explicit origins only
+    allow_origins     = [os.environ["ORIGINS"]],  # explicit origins only
     allow_credentials = False,   # allow cookies/Authorization
-    allow_methods     = [""],
-    allow_headers     = ["*"],
+    allow_methods     = ["GET", "POST", "OPTIONS"],
+    allow_headers     = ["Content-Type",
+                        "Authorization",
+                        "Accept",
+                        "Origin",
+                        "X-Requested-With",
+                        "Cache-Control",
+                        ],
     expose_headers    = ["Content-Disposition"],   # e.g., for file downloads
     max_age           = 600,  # cache preflight (seconds)allow_origins = ["*"],
 )
