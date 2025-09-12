@@ -7,15 +7,15 @@ from openpyxl import load_workbook
 from pathlib import Path
 from services import workbook, configData
 
-production = "https://whale-app-dwbzw.ondigitalocean.app/"
-test = "*"
+production = "https://whale-app-dwbzw.ondigitalocean.app"
+test = "http://localhost:3000"
 
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins     = [test],  # explicit origins only
-    allow_credentials = False,                   # allow cookies/Authorization
-    allow_methods     = ["*"],
+    allow_origins     = [production],  # explicit origins only
+    allow_credentials = False,   # allow cookies/Authorization
+    allow_methods     = [""],
     allow_headers     = ["*"],
     expose_headers    = ["Content-Disposition"],   # e.g., for file downloads
     max_age           = 600,  # cache preflight (seconds)allow_origins = ["*"],
